@@ -1,0 +1,20 @@
+.leftCol {
+  align-content: center;
+}
+
+.rightCol {
+  align-content: center;
+  background: #2b5f44;
+}
+
+@media only screen and (max-width: 767px) {
+  .rightCol {
+    border-radius: 0px 0px 36px 36px;
+  }
+}
+
+@media only screen and (min-width: 767px) {
+  .rightCol {
+    border-radius: 36px 0px 0px 36px;
+  }
+}
