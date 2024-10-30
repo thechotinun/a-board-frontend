@@ -1,12 +1,13 @@
 "use client";
 
 import { Layout, theme } from "antd";
-import MainLayout from "./component/layout";
-import Search from "./component/search/search";
+import MainLayout from "../component/layout";
+import Search from "../component/search/search";
+
 
 const { Content } = Layout;
 
-export default function Home() {
+export default function OurBlog() {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -23,7 +24,7 @@ export default function Home() {
               borderRadius: borderRadiusLG,
             }}
           >
-            <span>home</span>
+            <span>ourblog</span>
           </Content>
     </MainLayout>
   );
