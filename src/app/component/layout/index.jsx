@@ -17,6 +17,7 @@ import {
   Button,
   Drawer,
   Col,
+  Spin,
 } from "antd";
 import Link from "next/link";
 import { Castoro } from "next/font/google";
@@ -51,6 +52,7 @@ const castoro = Castoro({ subsets: ["latin"], weight: "400", style: "italic" });
 
 export default function MainLayout({ children }) {
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
   const screens = useBreakpoint();
@@ -65,6 +67,12 @@ export default function MainLayout({ children }) {
     } else {
       setScreenMD("20%");
     }
+    
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [screens.md]);
 
   return (
@@ -89,7 +97,9 @@ export default function MainLayout({ children }) {
             a Board
           </Link>
         </Title>
-        {screens.md ? (
+        {isLoading ? (
+          <Spin size="small" />
+        ) : screenMD !== "0" ? (
           <Button
             style={{
               color: "#FFFFFF",
@@ -161,40 +171,65 @@ export default function MainLayout({ children }) {
           </Col>
         </Drawer>
       </Header>
-      <Layout style={{ width: "100%", background: "#BBC2C0" }}>
-        <Sider
-          width={"20%"}
-          breakpoint="md"
-          collapsedWidth="0"
-          style={{
-            background: colorBgContainer,
-          }}
-        >
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={[pathname]}
+      {isLoading ? (
+        <Layout style={{ width: "100%", background: "#BBC2C0" }}>
+          <Layout
             style={{
-              height: "100%",
-              borderRight: 0,
-              width: "100%",
-              paddingTop: "20px",
+              padding: "0 24px 24px",
+              marginRight: 0,
               background: "#BBC2C0",
-              borderInlineEnd: "unset",
-              fontSize: "16px",
             }}
-            items={items}
-          />
-        </Sider>
-        <Layout
-          style={{
-            padding: "0 24px 24px",
-            marginRight: screenMD,
-            background: "#BBC2C0",
-          }}
-        >
-          {children}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+              }}
+            >
+              <Spin size="medium" />
+            </div>
+          </Layout>
         </Layout>
-      </Layout>
+      ) : (
+        <Layout style={{ width: "100%", background: "#BBC2C0" }}>
+          {screenMD !== "0" && (
+            <Sider
+              width={"20%"}
+              breakpoint="md"
+              collapsedWidth="0"
+              style={{
+                background: colorBgContainer,
+              }}
+            >
+              <Menu
+                mode="inline"
+                defaultSelectedKeys={[pathname]}
+                style={{
+                  height: "100%",
+                  borderRight: 0,
+                  width: "100%",
+                  paddingTop: "20px",
+                  background: "#BBC2C0",
+                  borderInlineEnd: "unset",
+                  fontSize: "16px",
+                }}
+                items={items}
+              />
+            </Sider>
+          )}
+          <Layout
+            style={{
+              padding: "0 24px 24px",
+              marginRight: screenMD,
+              background: "#BBC2C0",
+            }}
+          >
+            {children}
+          </Layout>
+        </Layout>
+      )}
     </Layout>
   );
 }

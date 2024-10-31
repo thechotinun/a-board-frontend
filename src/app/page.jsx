@@ -3,6 +3,8 @@
 import { Layout, theme } from "antd";
 import MainLayout from "./component/layout";
 import Search from "./component/search/search";
+import Card from "./component/card-post/card";
+
 
 const { Content } = Layout;
 
@@ -23,7 +25,7 @@ export default function Home() {
               borderRadius: borderRadiusLG,
             }}
           >
-            <span>home</span>
+            <Card />
           </Content>
     </MainLayout>
   );
