@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import styles from "./page.module.css";
 import {
   HomeOutlined,
   FormOutlined,
   ArrowRightOutlined,
   MenuOutlined,
+  LogoutOutlined,
+  LoginOutlined,
 } from "@ant-design/icons";
 import {
   Layout,
@@ -18,15 +21,20 @@ import {
   Drawer,
   Col,
   Spin,
+  Dropdown,
 } from "antd";
 import Link from "next/link";
 import { Castoro } from "next/font/google";
 import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const { Header, Content, Sider } = Layout;
 const { useBreakpoint } = Grid;
+const { Title, Text, Paragraph } = Typography;
+const castoro = Castoro({ subsets: ["latin"], weight: "400", style: "italic" });
 
-const items = [
+const itemsMenu = [
   {
     key: "/",
     icon: <HomeOutlined style={{ fontSize: "20px" }} />,
@@ -47,10 +55,16 @@ const items = [
   },
 ];
 
-const { Title, Text, Paragraph } = Typography;
-const castoro = Castoro({ subsets: ["latin"], weight: "400", style: "italic" });
+const items = [
+  {
+    key: "/",
+    icon: <LogoutOutlined style={{ fontSize: "15px" }} />,
+    label: <Text onClick={() => signOut()}>Sign Out</Text>,
+  },
+];
 
 export default function MainLayout({ children }) {
+  const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -67,12 +81,12 @@ export default function MainLayout({ children }) {
     } else {
       setScreenMD("20%");
     }
-    
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 300);
+    setIsLoading(false);
+    // const timer = setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 250);
 
-    return () => clearTimeout(timer);
+    // return () => clearTimeout(timer);
   }, [screens.md]);
 
   return (
@@ -100,19 +114,37 @@ export default function MainLayout({ children }) {
         {isLoading ? (
           <Spin size="small" />
         ) : screenMD !== "0" ? (
-          <Button
-            style={{
-              color: "#FFFFFF",
-              width: "105px",
-              height: "40px",
-              borderRadius: "8px",
-              borderColor: "#49A569",
-              backgroundColor: "#49A569",
-            }}
-            onClick={() => router.push("/signin")}
-          >
-            Sign In
-          </Button>
+          session ? (
+            <Dropdown
+              menu={{
+                items,
+              }}
+              trigger={["hover"]}
+            >
+              <Image
+                src="/images/1.jpeg"
+                alt="Circle Image"
+                width={31}
+                height={31}
+                className={styles.circleImage}
+              />
+            </Dropdown>
+          ) : (
+            <Button
+              icon={<LoginOutlined style={{ fontSize: "15px" }} />}
+              style={{
+                color: "#FFFFFF",
+                width: "105px",
+                height: "40px",
+                borderRadius: "8px",
+                borderColor: "#49A569",
+                backgroundColor: "#49A569",
+              }}
+              onClick={() => router.push("/signin")}
+            >
+              Sign In
+            </Button>
+          )
         ) : (
           <MenuOutlined
             style={{ color: "#FFFFFF" }}
@@ -128,18 +160,36 @@ export default function MainLayout({ children }) {
                 textAlign: "right",
               }}
             >
-              <Button
-                style={{
-                  color: "#FFFFFF",
-                  height: "35px",
-                  borderRadius: "8px",
-                  borderColor: "#49A569",
-                  backgroundColor: "#49A569",
-                }}
-                onClick={() => router.push("/signin")}
-              >
-                Sign In
-              </Button>
+              {session ? (
+                <Dropdown
+                  menu={{
+                    items,
+                  }}
+                  trigger={["hover"]}
+                >
+                  <Image
+                    src="/images/1.jpeg"
+                    alt="Circle Image"
+                    width={31}
+                    height={31}
+                    className={styles.circleImage}
+                  />
+                </Dropdown>
+              ) : (
+                <Button
+                  icon={<LoginOutlined style={{ fontSize: "15px" }} />}
+                  style={{
+                    color: "#FFFFFF",
+                    height: "35px",
+                    borderRadius: "8px",
+                    borderColor: "#49A569",
+                    backgroundColor: "#49A569",
+                  }}
+                  onClick={() => router.push("/signin")}
+                >
+                  Sign In
+                </Button>
+              )}
             </Col>
           }
           closeIcon={<ArrowRightOutlined style={{ color: "#FFFFFF" }} />}
@@ -171,65 +221,40 @@ export default function MainLayout({ children }) {
           </Col>
         </Drawer>
       </Header>
-      {isLoading ? (
-        <Layout style={{ width: "100%", background: "#BBC2C0" }}>
-          <Layout
+      <Layout style={{ width: "100%", background: "#BBC2C0" }}>
+        <Sider
+          width={screenMD}
+          breakpoint="md"
+          collapsedWidth="0"
+          style={{
+            background: colorBgContainer,
+          }}
+        >
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={[pathname]}
             style={{
-              padding: "0 24px 24px",
-              marginRight: 0,
+              height: "100%",
+              borderRight: 0,
+              width: "100%",
+              paddingTop: "20px",
               background: "#BBC2C0",
+              borderInlineEnd: "unset",
+              fontSize: "16px",
             }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100vh",
-              }}
-            >
-              <Spin size="medium" />
-            </div>
-          </Layout>
+            items={itemsMenu}
+          />
+        </Sider>
+        <Layout
+          style={{
+            padding: "0 24px 24px",
+            marginRight: screenMD,
+            background: "#BBC2C0",
+          }}
+        >
+          {children}
         </Layout>
-      ) : (
-        <Layout style={{ width: "100%", background: "#BBC2C0" }}>
-          {screenMD !== "0" && (
-            <Sider
-              width={"20%"}
-              breakpoint="md"
-              collapsedWidth="0"
-              style={{
-                background: colorBgContainer,
-              }}
-            >
-              <Menu
-                mode="inline"
-                defaultSelectedKeys={[pathname]}
-                style={{
-                  height: "100%",
-                  borderRight: 0,
-                  width: "100%",
-                  paddingTop: "20px",
-                  background: "#BBC2C0",
-                  borderInlineEnd: "unset",
-                  fontSize: "16px",
-                }}
-                items={items}
-              />
-            </Sider>
-          )}
-          <Layout
-            style={{
-              padding: "0 24px 24px",
-              marginRight: screenMD,
-              background: "#BBC2C0",
-            }}
-          >
-            {children}
-          </Layout>
-        </Layout>
-      )}
+      </Layout>
     </Layout>
   );
 }

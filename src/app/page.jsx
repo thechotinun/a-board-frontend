@@ -1,32 +1,22 @@
-"use client";
 
-import { Layout, theme } from "antd";
-import MainLayout from "./component/layout";
-import Search from "./component/search/search";
-import Card from "./component/card-post/card";
+import Home from "./home";
+import axiosInstance from "./utils/axios.interceptor";
 
 
-const { Content } = Layout;
+export default async function Posts() {
+  let posts = [];
 
-export default function Home() {
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+  try {
+    const response = await axiosInstance.get("/post");
+    
+    posts = response.data;
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+  }
 
   return (
-    <MainLayout>
-      <Search />
-          <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            <Card />
-          </Content>
-    </MainLayout>
+    <>
+      <Home posts={posts} isOurBlog={false} />
+    </>
   );
 }

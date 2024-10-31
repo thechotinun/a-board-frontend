@@ -1,31 +1,32 @@
-"use client";
 
-import { Layout, theme } from "antd";
-import MainLayout from "../component/layout";
-import Search from "../component/search/search";
-import Card from "../component/card-post/card";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import axiosInstance from "../utils/axios.interceptor";
+import OurBlog from "./ourblog";
 
-const { Content } = Layout;
 
-export default function OurBlog() {
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
+export default async function Posts() {
+  let posts = [];
+
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (session?.accessToken) {
+      const response = await axiosInstance.get("/user/post", {
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`
+        }
+      });
+      
+      posts = response.data;
+    }
+  } catch (error) {
+    console.error("Error fetching posts:", error.response.data);
+  }
 
   return (
-    <MainLayout>
-      <Search />
-          <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            <Card />
-          </Content>
-    </MainLayout>
+    <>
+      <OurBlog posts={posts} isOurBlog={true} />
+    </>
   );
 }
