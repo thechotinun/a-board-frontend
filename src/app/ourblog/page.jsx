@@ -1,27 +1,18 @@
-
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import axiosInstance from "../utils/axios.interceptor";
+import { redirect } from "next/navigation";
 import OurBlog from "./ourblog";
 
-
 export default async function Posts() {
-  let posts = [];
+  let posts;
 
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (session?.accessToken) {
-      const response = await axiosInstance.get("/user/post", {
-        headers: {
-          Authorization: `Bearer ${session.accessToken}`
-        }
-      });
-      
-      posts = response.data;
-    }
+    const response = await axiosInstance.get("/user/post");
+    posts = response.data;
   } catch (error) {
-    console.error("Error fetching posts:", error.response.data);
+    console.error("Error fetching posts:", error.response?.data || error);
+    if (error?.response?.data?.status === 403) {
+      redirect("/signin");
+    }
   }
 
   return (

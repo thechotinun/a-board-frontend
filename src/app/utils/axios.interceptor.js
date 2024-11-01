@@ -1,4 +1,6 @@
 import axios from "axios";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -7,6 +9,13 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
+    const session = await getServerSession(authOptions);
+    if (session) {
+      config.headers = {
+        Authorization: `Bearer ${session.accessToken}`,
+      };
+    }
+
     return config;
   },
   (error) => {
@@ -15,14 +24,23 @@ axiosInstance.interceptors.request.use(
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => {
+  async (response) => {
     return response;
   },
-  (error) => {
+  async (error) => {
     if (error.response) {
+      const session = await getServerSession(authOptions);
       // handle unauthorized
-      // window.location.href = '/signin';
-      console.log(`from axios interceptor error.response => `, error.response.data);
+      if(!session){
+        throw new Error('TOKEN_NOT_FOUND');
+      }
+      console.log(
+        `from axios interceptor error.response => `,
+        error.response.data
+      );
+      if (error?.response?.data?.status === 403) {
+        throw new Error('UNAUTHORIZED');
+      }
     }
     return Promise.reject(error);
   }
