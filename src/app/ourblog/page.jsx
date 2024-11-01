@@ -12,7 +12,7 @@ export default async function Posts() {
     posts = response.data;
     communitys = responseCommunity.data;
   } catch (error) {
-    console.error("Error fetching posts:", error.response?.data || error);
+    console.error("Error fetching posts:", error.response?.data);
     if (error?.response?.data?.status.code === 403) {
       redirect("/signin");
     }

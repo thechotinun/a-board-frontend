@@ -31,23 +31,35 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       const session = await getServerSession(authOptions);
       // handle unauthorized
-      if(!session){
-        error.response.data.status.code = 400
-        error.response.data.error.message = "TOKEN_NOT_FOUND"
-      }
-      if(session.error){
-        error.response.data.status.code = 401
-        error.response.data.error.message = "UNAUTHORIZED"
-      }
+      const customError = {
+        ...error,
+        response: {
+          ...error.response,
+          data: {
+            status: {
+              code: !session
+                ? 400
+                : session.error
+                ? 401
+                : error.response?.status,
+            },
+            error: {
+              message: !session
+                ? "TOKEN_NOT_FOUND"
+                : session?.error
+                ? "UNAUTHORIZED"
+                : error.response?.data?.message,
+            },
+          },
+        },
+      };
+
       console.log(
-        `from axios interceptor error.response => `,
-        error.response.data
+        "from axios interceptor customError.response =>",
+        customError.response.data
       );
-      if (error?.response?.data?.status.code === 403) {
-        error.response.data
-      }
+      return Promise.reject(customError);
     }
-    return Promise.reject(error);
   }
 );
 
