@@ -1,7 +1,8 @@
 "use client";
 
 import "./css/search.css";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { HomeContext } from "@/app/home";
 import { Row, Col, Input, Select, Button, Modal } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import CreatePost from "../modal-post/create-post";
@@ -11,6 +12,8 @@ export default function Search() {
   const { data: session, status } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpenInpSearch, setIsOpenInpSearch] = useState(false);
+  const { communitys } = useContext(HomeContext);
+
   const onChange = (value) => {
     console.log(`selected ${value}`);
   };
@@ -53,20 +56,14 @@ export default function Search() {
             width: "100%",
             maxWidth: "128px",
           }}
-          options={[
-            {
-              value: "jack",
-              label: "Jack",
-            },
-            {
-              value: "lucy",
-              label: "Lucy",
-            },
-            {
-              value: "tom",
-              label: "Tom",
-            },
-          ]}
+          options={
+            communitys?.data?.length
+              ? communitys.data.map((e) => ({
+                  value: e.id,
+                  label: e.name,
+                }))
+              : []
+          }
         />
       </Col>
       <Col xs={7} sm={4} md={5} lg={4} style={{ textAlign: "right" }}>

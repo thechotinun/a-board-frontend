@@ -21,6 +21,8 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
 
   const handleSubmit = async (values) => {
     console.log(values);
+    console.log(formComment.getFieldsValue());
+    
   };
 
   const onChange = (value) => {
@@ -43,7 +45,7 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
             <Col xs={24} sm={24} md={10} lg={10}>
               <Form.Item name={"community"}>
                 <Select
-                  placeholder="Choose a community"
+                  placeholder="Choose a communityId"
                   optionFilterProp="label"
                   onChange={onChange}
                   style={{

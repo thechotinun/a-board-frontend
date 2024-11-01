@@ -125,7 +125,8 @@ export default function MainLayout({ children }) {
                 <Text style={{ color: "#FFFFFF", cursor: "pointer" }}>
                   {session?.user?.userName}
                 </Text>
-                {session?.user?.userName === "admin" || session?.user?.userName === "test" ? (
+                {session?.user?.userName === "admin" ||
+                session?.user?.userName === "test" ? (
                   <Image
                     src={`/images/${session?.user?.userName}.jpeg`}
                     alt="Circle Image"
@@ -182,13 +183,24 @@ export default function MainLayout({ children }) {
                   }}
                   trigger={["hover"]}
                 >
-                  <Image
-                    src="/images/1.jpeg"
-                    alt="Circle Image"
-                    width={31}
-                    height={31}
-                    className={styles.circleImage}
-                  />
+                  {session?.user?.userName === "admin" ||
+                  session?.user?.userName === "test" ? (
+                    <Image
+                      src={`/images/${session?.user?.userName}.jpeg`}
+                      alt="Circle Image"
+                      width={31}
+                      height={31}
+                      className={styles.circleImage}
+                    />
+                  ) : (
+                    <Image
+                      src="/images/default.png"
+                      alt="Circle Image"
+                      width={31}
+                      height={31}
+                      className={styles.circleImage}
+                    />
+                  )}
                 </Dropdown>
               ) : (
                 <Button
@@ -243,6 +255,7 @@ export default function MainLayout({ children }) {
           collapsedWidth="0"
           style={{
             background: colorBgContainer,
+            display: screenMD === "20%" ? "block" : "none",
           }}
         >
           <Menu
