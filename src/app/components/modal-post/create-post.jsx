@@ -5,35 +5,53 @@ import React, { useContext } from "react";
 import { Row, Col, Input, Modal, Button, Select, Form, Spin } from "antd";
 import { useRouter } from "next/navigation";
 import { HomeContext } from "@/app/home";
+import { OurBlogContext } from "@/app/ourblog/ourblog";
+import axios from "axios";
+import { usePathname } from 'next/navigation';
 
 const { TextArea } = Input;
 
 export default function CreatePost({ isModalOpen, setIsModalOpen }) {
+  const pathname = usePathname();
   const router = useRouter();
   const [formComment] = Form.useForm();
   const [modal, contextHolder] = Modal.useModal();
 
-  const { communitys } = useContext(HomeContext);
+  //
+  const homeContext = useContext(HomeContext);
+  const ourBlogContext = useContext(OurBlogContext);
+  const communitys = pathname === '/ourblog' 
+    ? ourBlogContext.communitys 
+    : homeContext.communitys;
+
 
   const handleCancel = async (e) => {
+    formComment.resetFields();
     setIsModalOpen(!isModalOpen);
   };
 
   const handleSubmit = async (values) => {
-    console.log(values);
-    console.log(formComment.getFieldsValue());
-    
+    const data = formComment.getFieldsValue();
+
+    try {
+      const response = await axios.post("/api/post", data);
+      formComment.resetFields();
+      setIsModalOpen(!isModalOpen);
+      router.refresh();
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
   };
 
   const onChange = (value) => {
-    console.log(`selected ${value}`);
+    // console.log(`selected ${value}`);
   };
 
   return (
     <Modal
       title={`Create Post`}
       open={isModalOpen}
-      onOk={formComment.submit}
+      // onOk={formComment.submit}
       onCancel={handleCancel}
       maskClosable={false}
       centered
@@ -43,9 +61,14 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
         <Spin spinning={false}>
           <Row gutter={8}>
             <Col xs={24} sm={24} md={10} lg={10}>
-              <Form.Item name={"community"}>
+              <Form.Item
+                name={"communityId"}
+                rules={[
+                  { required: true, message: "Please choose a community!" },
+                ]}
+              >
                 <Select
-                  placeholder="Choose a communityId"
+                  placeholder="Choose a community"
                   optionFilterProp="label"
                   onChange={onChange}
                   style={{
@@ -65,7 +88,10 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
               </Form.Item>
             </Col>
             <Col xs={24} sm={24} md={24} lg={24}>
-              <Form.Item name={"title"}>
+              <Form.Item
+                name={"title"}
+                rules={[{ required: true, message: "Please enter a title!" }]}
+              >
                 <Input
                   placeholder="Title"
                   style={{
@@ -75,7 +101,12 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
               </Form.Item>
             </Col>
             <Col xs={24} sm={24} md={24} lg={24}>
-              <Form.Item name={"description"}>
+              <Form.Item
+                name={"description"}
+                rules={[
+                  { required: true, message: "Please enter a description!" },
+                ]}
+              >
                 <TextArea placeholder="Description" rows={6} />
               </Form.Item>
             </Col>
@@ -88,14 +119,13 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
             style={{
               width: "100%",
               color: "#49A569",
-              //   maxWidth: "105px",
               height: "40px",
               borderRadius: "8px",
               borderColor: "#49A569",
               marginRight: "10px",
             }}
             onClick={() => {
-              setIsModalOpen(!isModalOpen);
+              handleCancel();
             }}
           >
             Cancel
@@ -104,11 +134,19 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
         <Col xs={24} sm={24} md={5} lg={5}>
           <Button
             type="primary"
-            onClick={handleSubmit}
+            onClick={() => {
+              formComment
+                .validateFields()
+                .then(() => {
+                  formComment.submit();
+                })
+                .catch((errorInfo) => {
+                  console.log("Validation Failed:", errorInfo);
+                });
+            }}
             style={{
               width: "100%",
               color: "#FFFFFF",
-              //   maxWidth: "105px",
               height: "40px",
               borderRadius: "8px",
               borderColor: "#49A569",

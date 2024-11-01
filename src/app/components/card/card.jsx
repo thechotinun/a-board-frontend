@@ -18,6 +18,7 @@ const { Paragraph, Title, Text } = Typography;
 const item = [1, 2, 3, 4];
 export default function Card({ posts, isOurBlog }) {
   const router = useRouter();
+  const [postId, setPostId] = useState();
   const [expanded, setExpanded] = useState(false);
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
@@ -96,6 +97,7 @@ export default function Card({ posts, isOurBlog }) {
                           <EditOutlined
                             style={{ marginRight: "15px", fontSize: "18px" }}
                             onClick={() => {
+                              setPostId(e.id)
                               setIsModalUpdateOpen(!isModalUpdateOpen);
                             }}
                           />
@@ -159,6 +161,8 @@ export default function Card({ posts, isOurBlog }) {
       <UpdatePost
         isModalUpdateOpen={isModalUpdateOpen}
         setIsModalUpdateOpen={setIsModalUpdateOpen}
+        postId={postId}
+        setPostId={setPostId}
       />
       <DeletePost
         isModalDeleteOpen={isModalDeleteOpen}

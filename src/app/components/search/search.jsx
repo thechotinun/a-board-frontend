@@ -3,16 +3,25 @@
 import "./css/search.css";
 import React, { useState, useContext } from "react";
 import { HomeContext } from "@/app/home";
+import { OurBlogContext } from "@/app/ourblog/ourblog";
 import { Row, Col, Input, Select, Button, Modal } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import CreatePost from "../modal-post/create-post";
 import { useSession } from "next-auth/react";
+import { usePathname } from 'next/navigation';
+
 
 export default function Search() {
+  const pathname = usePathname();
   const { data: session, status } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpenInpSearch, setIsOpenInpSearch] = useState(false);
-  const { communitys } = useContext(HomeContext);
+  //
+  const homeContext = useContext(HomeContext);
+  const ourBlogContext = useContext(OurBlogContext);
+  const communitys = pathname === '/ourblog' 
+    ? ourBlogContext.communitys 
+    : homeContext.communitys;
 
   const onChange = (value) => {
     console.log(`selected ${value}`);
@@ -78,7 +87,7 @@ export default function Search() {
             backgroundColor: "#49A569",
           }}
           onClick={() => {
-            if (!session) return warning();
+            if (session.error === "AccessTokenError") return warning();
             setIsModalOpen(!isModalOpen);
           }}
         >
