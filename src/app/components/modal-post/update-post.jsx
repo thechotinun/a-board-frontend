@@ -17,7 +17,6 @@ export default function UpdatePost({
 }) {
   const router = useRouter();
   const [formComment] = Form.useForm();
-  const [modal, contextHolder] = Modal.useModal();
   const { communitys } = useContext(OurBlogContext);
 
   const handleCancel = async (e) => {

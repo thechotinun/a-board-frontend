@@ -7,6 +7,7 @@ import MainLayout from "../components/layout";
 import Search from "../components/search/search";
 import Card from "../components/card/card";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const { Title, Text, Paragraph } = Typography;
 const { Content } = Layout;
@@ -14,6 +15,7 @@ const { Content } = Layout;
 export const OurBlogContext = createContext({});
 
 export default function OurBlog({ posts, communitys }) {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const {
     token: { colorBgContainer, borderRadiusLG },

@@ -4,27 +4,33 @@ import "./css/modal-post.css";
 import React, { useState } from "react";
 import { Row, Col, Input, Modal, Button, Select, Form, Spin } from "antd";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const { TextArea } = Input;
 
 export default function DeletePost({
   isModalDeleteOpen,
   setIsModalDeleteOpen,
+  postId,
+  setPostId,
 }) {
   const router = useRouter();
   const [formComment] = Form.useForm();
-  const [modal, contextHolder] = Modal.useModal();
 
   const handleCancel = async (e) => {
     setIsModalDeleteOpen(!isModalDeleteOpen);
   };
 
   const handleSubmit = async (values) => {
-    console.log(values);
-  };
+    try {
+      const response = await axios.delete(`/api/post/${postId}`);
 
-  const onChange = (value) => {
-    console.log(`selected ${value}`);
+      setPostId();
+      router.refresh();
+      setIsModalDeleteOpen(!isModalDeleteOpen);
+    } catch (error) {
+      console.error("Error delete post data:", error);
+    }
   };
 
   return (
@@ -43,7 +49,7 @@ export default function DeletePost({
           <p>{`Are you sure you want to delete the post? Once deleted, it cannot be recovered.`}</p>
         </Spin>
       </Form>
-      <Row gutter={[8, 8]} style={{marginTop: "10px"}}>
+      <Row gutter={[8, 8]} style={{ marginTop: "10px" }}>
         <Col xs={24} sm={24} md={12} lg={12}>
           <Button
             style={{
@@ -65,7 +71,9 @@ export default function DeletePost({
           <Button
             type="primary"
             danger
-            onClick={handleSubmit}
+            onClick={() => {
+              handleSubmit();
+            }}
             style={{
               width: "100%",
               color: "#FFFFFF",

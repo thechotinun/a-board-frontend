@@ -15,7 +15,6 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
   const pathname = usePathname();
   const router = useRouter();
   const [formComment] = Form.useForm();
-  const [modal, contextHolder] = Modal.useModal();
 
   //
   const homeContext = useContext(HomeContext);

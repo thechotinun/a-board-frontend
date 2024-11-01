@@ -104,6 +104,7 @@ export default function Card({ posts, isOurBlog }) {
                           <DeleteOutlined
                             style={{ fontSize: "18px", color: "red" }}
                             onClick={() => {
+                              setPostId(e.id)
                               setIsModalDeleteOpen(!isModalDeleteOpen);
                             }}
                           />
@@ -167,6 +168,8 @@ export default function Card({ posts, isOurBlog }) {
       <DeletePost
         isModalDeleteOpen={isModalDeleteOpen}
         setIsModalDeleteOpen={setIsModalDeleteOpen}
+        postId={postId}
+        setPostId={setPostId}
       />
     </>
   );
