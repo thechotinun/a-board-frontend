@@ -87,7 +87,7 @@ export default function Search() {
             backgroundColor: "#49A569",
           }}
           onClick={() => {
-            if (session.error === "AccessTokenError") return warning();
+            if (!session || session?.error === "AccessTokenError") return warning();
             setIsModalOpen(!isModalOpen);
           }}
         >
