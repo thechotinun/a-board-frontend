@@ -27,9 +27,18 @@ export default function UpdatePost({
   };
 
   const handleSubmit = async (values) => {
-    console.log(values);
-    formComment.resetFields();
-    setPostId();
+    const data = formComment.getFieldsValue();
+
+    try {
+      const response = await axios.patch(`/api/post/${postId}`, data);
+
+      formComment.resetFields();
+      setPostId();
+      router.refresh();
+      setIsModalUpdateOpen(!isModalUpdateOpen);
+    } catch (error) {
+      console.error("Error update post data:", error);
+    }
   };
 
   const onChange = (value) => {
