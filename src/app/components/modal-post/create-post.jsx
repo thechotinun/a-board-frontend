@@ -1,9 +1,10 @@
 "use client";
 
 import "./css/modal-post.css";
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Row, Col, Input, Modal, Button, Select, Form, Spin } from "antd";
 import { useRouter } from "next/navigation";
+import { HomeContext } from "@/app/home";
 
 const { TextArea } = Input;
 
@@ -11,6 +12,8 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
   const router = useRouter();
   const [formComment] = Form.useForm();
   const [modal, contextHolder] = Modal.useModal();
+
+  const { communitys } = useContext(HomeContext);
 
   const handleCancel = async (e) => {
     setIsModalOpen(!isModalOpen);
@@ -48,20 +51,14 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
                     height: "40px",
                   }}
                   className="customSelect"
-                  options={[
-                    {
-                      value: "jack",
-                      label: "Jack",
-                    },
-                    {
-                      value: "lucy",
-                      label: "Lucy",
-                    },
-                    {
-                      value: "tom",
-                      label: "Tom",
-                    },
-                  ]}
+                  options={
+                    communitys?.data?.length
+                      ? communitys.data.map((e) => ({
+                          value: e.id,
+                          label: e.name,
+                        }))
+                      : []
+                  }
                 />
               </Form.Item>
             </Col>
@@ -83,7 +80,7 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
           </Row>
         </Spin>
       </Form>
-      <Row gutter={[8, 8]} style={{justifyContent: "flex-end"}}>
+      <Row gutter={[8, 8]} style={{ justifyContent: "flex-end" }}>
         <Col xs={24} sm={24} md={5} lg={5}>
           <Button
             style={{
