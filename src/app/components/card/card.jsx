@@ -60,13 +60,24 @@ export default function Card({ posts, isOurBlog }) {
                         className={styles.circle}
                         style={{ marginRight: "4px" }}
                       >
-                        <Image
-                          src="/images/1.jpeg"
-                          alt="Circle Image"
-                          width={31}
-                          height={31}
-                          className={styles.circleImage}
-                        />
+                        {e.user.userName === "admin" ||
+                        e.user.userName === "test" ? (
+                          <Image
+                            src={`/images/${e.user.userName}.jpeg`}
+                            alt="Circle Image"
+                            width={31}
+                            height={31}
+                            className={styles.circleImage}
+                          />
+                        ) : (
+                          <Image
+                            src="/images/default.png"
+                            alt="Circle Image"
+                            width={31}
+                            height={31}
+                            className={styles.circleImage}
+                          />
+                        )}
                       </div>
                       <Text style={{ color: "#939494" }}>
                         {e.user.userName}

@@ -22,7 +22,7 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       // handle unauthorized
       // window.location.href = '/signin';
-      console.log(`sign-in again please.`);
+      console.log(`error.response => `, error.response);
     }
     return Promise.reject(error);
   }

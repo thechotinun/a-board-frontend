@@ -121,13 +121,28 @@ export default function MainLayout({ children }) {
               }}
               trigger={["hover"]}
             >
-              <Image
-                src="/images/1.jpeg"
-                alt="Circle Image"
-                width={31}
-                height={31}
-                className={styles.circleImage}
-              />
+              <Col style={{ display: "flex", alignItems: "center" }}>
+                <Text style={{ color: "#FFFFFF", cursor: "pointer" }}>
+                  {session?.user?.userName}
+                </Text>
+                {session?.user?.userName === "admin" || session?.user?.userName === "test" ? (
+                  <Image
+                    src={`/images/${session?.user?.userName}.jpeg`}
+                    alt="Circle Image"
+                    width={31}
+                    height={31}
+                    className={styles.circleImage}
+                  />
+                ) : (
+                  <Image
+                    src="/images/default.png"
+                    alt="Circle Image"
+                    width={31}
+                    height={31}
+                    className={styles.circleImage}
+                  />
+                )}
+              </Col>
             </Dropdown>
           ) : (
             <Button
