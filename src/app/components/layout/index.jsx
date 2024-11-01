@@ -68,7 +68,10 @@ export default function MainLayout({ children }) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
   const pathname = usePathname();
+  const firstSegment = pathname.split('/')[1];
+  
   const screens = useBreakpoint();
   const [screenMD, setScreenMD] = useState("20%");
   const {
@@ -82,11 +85,6 @@ export default function MainLayout({ children }) {
       setScreenMD("20%");
     }
     setIsLoading(false);
-    // const timer = setTimeout(() => {
-    //   setIsLoading(false);
-    // }, 250);
-
-    // return () => clearTimeout(timer);
   }, [screens.md]);
 
   return (
@@ -275,8 +273,8 @@ export default function MainLayout({ children }) {
         </Sider>
         <Layout
           style={{
-            padding: "0 24px 24px",
-            marginRight: screenMD,
+            padding: firstSegment === "post" ? "0 0 0 0" : "0 24px 24px",
+            marginRight: firstSegment === "post" ? 0 : screenMD,
             background: "#BBC2C0",
           }}
         >

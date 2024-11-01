@@ -97,14 +97,14 @@ export default function Card({ posts, isOurBlog }) {
                           <EditOutlined
                             style={{ marginRight: "15px", fontSize: "18px" }}
                             onClick={() => {
-                              setPostId(e.id)
+                              setPostId(e.id);
                               setIsModalUpdateOpen(!isModalUpdateOpen);
                             }}
                           />
                           <DeleteOutlined
                             style={{ fontSize: "18px", color: "red" }}
                             onClick={() => {
-                              setPostId(e.id)
+                              setPostId(e.id);
                               setIsModalDeleteOpen(!isModalDeleteOpen);
                             }}
                           />
@@ -138,17 +138,21 @@ export default function Card({ posts, isOurBlog }) {
                   <Col
                     span={24}
                     style={{
-                      cursor: "pointer",
                       borderBottom: "1px solid #BBC2C0",
                       paddingBottom: "15px",
                     }}
-                    onClick={() => router.push(`/post-detail/${1}`)}
                   >
                     <CommentOutlined
                       style={{ fontSize: "18px", marginRight: "4px" }}
                     />
                     <Text>{e.commentCount} Comments</Text>
-                    <Text style={{ color: "blue" }}> Click! </Text>
+                    <Text
+                      style={{ color: "blue", cursor: "pointer" }}
+                      onClick={() => router.push(`/post/${e.id}`)}
+                    >
+                      {" "}
+                      Click!{" "}
+                    </Text>
                   </Col>
                 </Col>
               );
