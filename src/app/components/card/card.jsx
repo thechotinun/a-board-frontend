@@ -31,7 +31,6 @@ export default function Card({ posts, isOurBlog }) {
           background: "#FFFFFF",
           padding: "0px 10px",
           borderRadius: "12px",
-          minHeight: 270,
           height: "100%",
           overflowY: "auto",
           alignContent: "space-between",

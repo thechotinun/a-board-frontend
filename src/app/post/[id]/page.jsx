@@ -6,20 +6,20 @@ import Post from ".";
 
 export default async function Posts({params}) {
   let post = [];
-//   let communitys = [];
+  let comment = [];
 
   try {
     const responsePost = await axiosInstance.get(`/post/${params.id}`);
-    // const responseCommunity = await axiosInstance.get("/community");
+    const responseComment = await axiosInstance.get(`/post/${params.id}/comment`);
     post = responsePost.data;
-    // communitys = responseCommunity.data;
+    comment = responseComment.data;
   } catch (error) {
     console.error("Error fetching posts:", error);
   }
 
   return (
     <>
-      <Post post={post} />
+      <Post post={post} comment={comment} />
     </>
   );
 }

@@ -10,11 +10,14 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import styles from "./comments.module.css";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 const { Paragraph, Title, Text } = Typography;
+dayjs.extend(relativeTime);
 
-export default function Comments() {
-  const router = useRouter();
+export default function Comments({ comment }) {
+  const { data } = comment;
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -24,34 +27,57 @@ export default function Comments() {
         background: "#FFFFFF",
         padding: "15px 10px",
         borderRadius: "12px",
+        // maxHeight: "50%",
+        // maxHeight: "calc(65vh - 150px)",
+        // overflowY: "auto",
       }}
     >
-      <Col span={24} style={{ display: "flex", alignItems: "center" }}>
-        <div
-          className={styles.circle}
-          style={{ marginRight: "4px", background: "#939494" }}
-        >
-          <UserOutlined style={{ fontSize: "20px" }} />
-        </div>
-        <Text style={{ color: "#000000" }}>
-          Wittawat <Text style={{ color: "#939494" }}> 12h ago</Text>
-        </Text>
-      </Col>
-      <Col offset={1} span={23}>
-        <Paragraph
-          ellipsis={{
-            rows: 2,
-            expandable: "collapsible",
-            expanded,
-            onExpand: (_, info) => setExpanded(info.expanded),
-          }}
-        >
-          Lorem ipsum dolor sit amet consectetur. Purus cursus vel est a pretium
-          quam imperdiet. Tristique auctor sed semper nibh odio iaculis sed
-          aliquet. Amet mollis eget morbi feugiat mi risus eu. Tortor sed
-          sagittis convallis auctor.
-        </Paragraph>
-      </Col>
+      {data?.length &&
+        data.map((e) => {
+          return (
+            <React.Fragment key={e.id}>
+              <Col span={24} style={{ display: "flex", alignItems: "center" }}>
+                {e?.user?.userName === "test" ||
+                e?.user?.userName === "admin" ? (
+                  <Image
+                    src={`/images/${e?.user?.userName}.jpeg`}
+                    alt="Circle Image"
+                    width={31}
+                    height={31}
+                    className={styles.circleImage}
+                  />
+                ) : (
+                  <Image
+                    src="/images/default.png"
+                    alt="Circle Image"
+                    width={31}
+                    height={31}
+                    className={styles.circleImage}
+                  />
+                )}
+                <Text style={{ marginLeft: "5px" ,color: "#000000" }}>
+                  {e?.user?.userName}{" "}
+                  <Text style={{ color: "#939494" }}>
+                    {" "}
+                    {dayjs(data?.createdDate).fromNow()}{" "}
+                  </Text>
+                </Text>
+              </Col>
+              <Col offset={1} span={23}>
+                <Paragraph
+                  ellipsis={{
+                    rows: 2,
+                    expandable: "collapsible",
+                    expanded,
+                    onExpand: (_, info) => setExpanded(info.expanded),
+                  }}
+                >
+                  {e?.text}
+                </Paragraph>
+              </Col>
+            </React.Fragment>
+          );
+        })}
     </Row>
   );
 }
