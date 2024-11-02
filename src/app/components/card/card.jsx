@@ -15,7 +15,7 @@ import DeletePost from "../modal-post/delete-post";
 import styles from "./card-post.module.css";
 
 const { Paragraph, Title, Text } = Typography;
-const item = [1, 2, 3, 4];
+
 export default function Card({ posts, isOurBlog }) {
   const router = useRouter();
   const [postId, setPostId] = useState();

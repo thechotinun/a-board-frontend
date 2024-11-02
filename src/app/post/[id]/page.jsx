@@ -4,15 +4,14 @@ import axiosInstance from "@/app/utils/axios.interceptor";
 import Post from ".";
 
 
-export default async function Posts() {
-//   let posts = [];
+export default async function Posts({params}) {
+  let post = [];
 //   let communitys = [];
 
   try {
-    // const responsePost = await axiosInstance.get("/post");
+    const responsePost = await axiosInstance.get(`/post/${params.id}`);
     // const responseCommunity = await axiosInstance.get("/community");
-    
-    // posts = responsePost.data;
+    post = responsePost.data;
     // communitys = responseCommunity.data;
   } catch (error) {
     console.error("Error fetching posts:", error);
@@ -20,7 +19,7 @@ export default async function Posts() {
 
   return (
     <>
-      <Post />
+      <Post post={post} />
     </>
   );
 }

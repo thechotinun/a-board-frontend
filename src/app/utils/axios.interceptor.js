@@ -48,7 +48,7 @@ axiosInstance.interceptors.response.use(
                 ? "TOKEN_NOT_FOUND"
                 : session?.error
                 ? "UNAUTHORIZED"
-                : error.response?.data?.message,
+                : error.response.data.error.message,
             },
           },
         },

@@ -7,7 +7,7 @@ import Detail from "./detail";
 
 const { Content } = Layout;
 
-export default function Post({}) {
+export default function Post({post}) {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -22,7 +22,7 @@ export default function Post({}) {
           background: colorBgContainer,
         }}
       >
-        <Detail />
+        <Detail post={post}/>
       </Content>
     </MainLayout>
   );
