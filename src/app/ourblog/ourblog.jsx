@@ -7,7 +7,7 @@ import MainLayout from "../components/layout";
 import Search from "../components/search/search";
 import Card from "../components/card/card";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const { Title, Text, Paragraph } = Typography;
 const { Content } = Layout;
@@ -16,6 +16,7 @@ export const OurBlogContext = createContext({});
 
 export default function OurBlog({ posts, communitys }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -23,6 +24,18 @@ export default function OurBlog({ posts, communitys }) {
 
   const contextValue = {
     communitys,
+  };
+
+  const handlePageChange = async (newPage) => {
+    const title = searchParams.get("title");
+    const newUrl = title
+      ? `?page=${newPage}&title=${title}`
+      : `?page=${newPage}`;
+    try {
+      router.push(newUrl);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
   };
 
   return (
@@ -75,7 +88,15 @@ export default function OurBlog({ posts, communitys }) {
                   alignContent: "end",
                 }}
               >
-                <Pagination defaultCurrent={1} total={100} showSizeChanger={false} />
+                {/* <Pagination align="end" defaultCurrent={1} total={100} showSizeChanger={false}/> */}
+                <Pagination
+                  align="end"
+                  current={posts?.meta?.currentPage}
+                  total={posts?.meta?.totalItems || 0}
+                  pageSize={posts?.meta?.itemsPerPage || 10}
+                  showSizeChanger={false}
+                  onChange={handlePageChange}
+                />
               </Col>
             </>
           )}

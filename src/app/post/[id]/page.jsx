@@ -10,7 +10,7 @@ export default async function Posts({params}) {
 
   try {
     const responsePost = await axiosInstance.get(`/post/${params.id}`);
-    const responseComment = await axiosInstance.get(`/post/${params.id}/comment`);
+    const responseComment = await axiosInstance.get(`/post/${params.id}/comment?perPage=${1000}`);
     post = responsePost.data;
     comment = responseComment.data;
   } catch (error) {

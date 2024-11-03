@@ -37,7 +37,7 @@ export default function Card({ posts, isOurBlog }) {
         }}
       >
         <Col span={24}>
-          {posts?.data?.length &&
+          {posts?.data?.length ? (
             posts?.data.map((e) => {
               return (
                 <Col key={e.id} span={24}>
@@ -141,7 +141,9 @@ export default function Card({ posts, isOurBlog }) {
                     <CommentOutlined
                       style={{ fontSize: "18px", marginRight: "4px" }}
                     />
-                    <Text style={{ color: "#939494" }}>{e.commentCount} Comments</Text>
+                    <Text style={{ color: "#939494" }}>
+                      {e.commentCount} Comments
+                    </Text>
                     <Text
                       style={{ color: "blue", cursor: "pointer" }}
                       onClick={() => router.push(`/post/${e.id}`)}
@@ -152,11 +154,17 @@ export default function Card({ posts, isOurBlog }) {
                   </Col>
                 </Col>
               );
-            })}
+            })
+          ) : (
+            <>
+              <Col>
+                <Text style={{ color: "#939494" }}>
+                  No Post
+                </Text>
+              </Col>
+            </>
+          )}
         </Col>
-        {/* <Col style={{ width: "100%", justifyItems: "end" }}>
-          <Pagination defaultCurrent={1} total={100} />
-        </Col> */}
       </Row>
 
       <UpdatePost

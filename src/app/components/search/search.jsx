@@ -1,30 +1,43 @@
 "use client";
 
 import "./css/search.css";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { HomeContext } from "@/app/home";
 import { OurBlogContext } from "@/app/ourblog/ourblog";
 import { Row, Col, Input, Select, Button, Modal } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import CreatePost from "../modal-post/create-post";
 import { useSession } from "next-auth/react";
-import { usePathname } from 'next/navigation';
-
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Search() {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpenInpSearch, setIsOpenInpSearch] = useState(false);
   //
   const homeContext = useContext(HomeContext);
   const ourBlogContext = useContext(OurBlogContext);
-  const communitys = pathname === '/ourblog' 
-    ? ourBlogContext.communitys 
-    : homeContext.communitys;
+  const communitys =
+    pathname === "/ourblog"
+      ? ourBlogContext.communitys
+      : homeContext.communitys;
 
   const onChange = (value) => {
     console.log(`selected ${value}`);
+  };
+
+  const onChangeSearchInp = (e) => {
+    const delay = setTimeout(() => {
+      if(e.target.value.length !== 0){
+        router.push(`?title=${e.target.value}`);
+      }else{
+        router.push(`${pathname}`);
+      }
+    }, 1000);
+    return () => clearTimeout(delay);
   };
 
   const warning = () => {
@@ -53,6 +66,7 @@ export default function Search() {
           }
           placeholder="Search"
           allowClear
+          onChange={onChangeSearchInp}
         />
       </Col>
 
@@ -87,7 +101,8 @@ export default function Search() {
             backgroundColor: "#49A569",
           }}
           onClick={() => {
-            if (!session || session?.error === "AccessTokenError") return warning();
+            if (!session || session?.error === "AccessTokenError")
+              return warning();
             setIsModalOpen(!isModalOpen);
           }}
         >
