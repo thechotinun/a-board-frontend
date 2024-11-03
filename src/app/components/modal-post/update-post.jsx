@@ -3,7 +3,6 @@
 import "./css/modal-post.css";
 import React, { useEffect, useCallback, useContext } from "react";
 import { Row, Col, Input, Modal, Button, Select, Form, Spin } from "antd";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { OurBlogContext } from "@/app/ourblog/ourblog";
 
@@ -15,9 +14,8 @@ export default function UpdatePost({
   postId,
   setPostId,
 }) {
-  const router = useRouter();
   const [formComment] = Form.useForm();
-  const { communitys } = useContext(OurBlogContext);
+  const { communitys, fetchingPosts } = useContext(OurBlogContext);
 
   const handleCancel = async (e) => {
     formComment.resetFields();
@@ -33,8 +31,8 @@ export default function UpdatePost({
 
       formComment.resetFields();
       setPostId();
-      router.refresh();
       setIsModalUpdateOpen(!isModalUpdateOpen);
+      fetchingPosts(1);
     } catch (error) {
       console.error("Error update post data:", error);
     }

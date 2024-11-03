@@ -21,10 +21,6 @@ export default function Home({ communitys }) {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const contextValue = {
-    communitys,
-  };
-
   const fetchingPosts = async (newPage) => {
     try {
       const {
@@ -66,6 +62,11 @@ export default function Home({ communitys }) {
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
+  };
+
+  const contextValue = {
+    communitys,
+    fetchingPosts,
   };
 
   return (

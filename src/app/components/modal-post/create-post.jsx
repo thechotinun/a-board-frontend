@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { HomeContext } from "@/app/home";
 import { OurBlogContext } from "@/app/ourblog/ourblog";
 import axios from "axios";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 const { TextArea } = Input;
 
@@ -19,10 +19,10 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
   //
   const homeContext = useContext(HomeContext);
   const ourBlogContext = useContext(OurBlogContext);
-  const communitys = pathname === '/ourblog' 
-    ? ourBlogContext.communitys 
-    : homeContext.communitys;
-
+  const communitys =
+    pathname === "/ourblog"
+      ? ourBlogContext.communitys
+      : homeContext.communitys;
 
   const handleCancel = async (e) => {
     formComment.resetFields();
@@ -36,7 +36,11 @@ export default function CreatePost({ isModalOpen, setIsModalOpen }) {
       const response = await axios.post("/api/post", data);
       formComment.resetFields();
       setIsModalOpen(!isModalOpen);
-      router.refresh();
+      if(pathname === "/ourblog"){
+        ourBlogContext.fetchingPosts(1);
+      }else{
+        homeContext.fetchingPosts(1);
+      }
     } catch (error) {
       console.error("Error creating post:", error);
     }

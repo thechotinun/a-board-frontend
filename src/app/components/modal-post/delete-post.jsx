@@ -1,9 +1,9 @@
 "use client";
 
 import "./css/modal-post.css";
-import React, { useState } from "react";
-import { Row, Col, Input, Modal, Button, Select, Form, Spin } from "antd";
-import { useRouter } from "next/navigation";
+import React, { useContext } from "react";
+import { OurBlogContext } from "@/app/ourblog/ourblog";
+import { Row, Col, Input, Modal, Button, Form, Spin } from "antd";
 import axios from "axios";
 
 const { TextArea } = Input;
@@ -14,8 +14,8 @@ export default function DeletePost({
   postId,
   setPostId,
 }) {
-  const router = useRouter();
   const [formComment] = Form.useForm();
+  const { fetchingPosts } = useContext(OurBlogContext);
 
   const handleCancel = async (e) => {
     setIsModalDeleteOpen(!isModalDeleteOpen);
@@ -26,7 +26,7 @@ export default function DeletePost({
       const response = await axios.delete(`/api/post/${postId}`);
 
       setPostId();
-      router.refresh();
+      fetchingPosts(1);
       setIsModalDeleteOpen(!isModalDeleteOpen);
     } catch (error) {
       console.error("Error delete post data:", error);
