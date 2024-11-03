@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -23,6 +23,7 @@ const handler = NextAuth({
               userName: credentials?.userName,
               accessToken: response.data.data.accessToken,
               refreshToken: response.data.data.refreshToken,
+              tokenExpiry: new Date().getTime() + (30 * 60 * 1000), // 30 minutes from now
             };
           }
           return null;
@@ -34,24 +35,46 @@ const handler = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
+      // Initial sign in
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
         token.userName = user.userName;
+        token.tokenExpiry = user.tokenExpiry;
+        return token;
       }
-      return token;
+
+      // Return previous token if the access token has not expired
+      if (new Date().getTime() < token.tokenExpiry) {
+        return token;
+      }
+
+      return {
+        ...token,
+        error: "AccessTokenError",
+      };
     },
     async session({ session, token }) {
+      if (token.error) {
+        // Add error to session to handle in client
+        session.error = token.error;
+      }
+      
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.user = { userName: token.userName };
       return session;
     },
   },
+  pages: {
+    signIn: '/signin'
+  },
   session: {
     strategy: "jwt",
     maxAge: 30 * 60,
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

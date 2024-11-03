@@ -1,0 +1,30 @@
+.mainHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.mainSider {
+  border-right: 0;
+  padding-top: 20px;
+  font-size: 16px;
+}
+
+.circle {
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circleImage {
+  border-radius: 50%;
+  margin: 0 0 0 5px;
+  cursor: pointer;
+}

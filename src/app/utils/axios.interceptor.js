@@ -1,5 +1,6 @@
 import axios from "axios";
-import { getSession } from "next-auth/react";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -8,10 +9,11 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    const session = await getSession();
-
-    if (session?.accessToken) {
-      config.headers.Authorization = `Bearer ${session.accessToken}`;
+    const session = await getServerSession(authOptions);
+    if (session) {
+      config.headers = {
+        Authorization: `Bearer ${session.accessToken}`,
+      };
     }
 
     return config;
@@ -22,17 +24,42 @@ axiosInstance.interceptors.request.use(
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => {
+  async (response) => {
     return response;
   },
-  (error) => {
-    if (error.response && error.response.status === 401) {
+  async (error) => {
+    if (error.response) {
+      const session = await getServerSession(authOptions);
       // handle unauthorized
-      // window.location.href = '/signin';
-      console.log(error.response);
-      console.log(`sign-in again please.`);
+      const customError = {
+        ...error,
+        response: {
+          ...error.response,
+          data: {
+            status: {
+              code: !session
+                ? 400
+                : session.error
+                ? 401
+                : error.response?.status,
+            },
+            error: {
+              message: !session
+                ? "TOKEN_NOT_FOUND"
+                : session?.error
+                ? "UNAUTHORIZED"
+                : error.response.data.error.message,
+            },
+          },
+        },
+      };
+
+      console.log(
+        "from axios interceptor customError.response =>",
+        customError.response.data
+      );
+      return Promise.reject(customError);
     }
-    return Promise.reject(error);
   }
 );
 

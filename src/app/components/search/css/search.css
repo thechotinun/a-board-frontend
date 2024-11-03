@@ -1,0 +1,16 @@
+.ant-select-selector {
+    background-color: #BBC2C0 !important;
+    border: unset !important;
+  }
+  
+  .ant-select-selection-placeholder {
+    color: #000000 !important;
+  }
+  
+  .ant-select-arrow {
+    color: #000000 !important;
+  }
+  
+  .ant-select-show-search {
+    cursor: unset !important;
+  }
