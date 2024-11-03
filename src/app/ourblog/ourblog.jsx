@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext } from "react";
-import { Layout, theme, Button, Typography, Col } from "antd";
+import { Layout, theme, Button, Typography, Col, Pagination } from "antd";
 import { LoginOutlined } from "@ant-design/icons";
 import MainLayout from "../components/layout";
 import Search from "../components/search/search";
@@ -31,9 +31,9 @@ export default function OurBlog({ posts, communitys }) {
         <Search />
         <Content
           style={{
-            padding: 24,
+            padding: "15px 24px",
             margin: 0,
-            //   minHeight: 280,
+            minHeight: 270,
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
@@ -65,7 +65,19 @@ export default function OurBlog({ posts, communitys }) {
               </Button>
             </Col>
           ) : (
-            <Card posts={posts} isOurBlog={true} />
+            <>
+              <Card posts={posts} isOurBlog={true} />
+              <Col
+                style={{
+                  width: "100%",
+                  justifyItems: "end",
+                  height: "10%",
+                  alignContent: "end",
+                }}
+              >
+                <Pagination defaultCurrent={1} total={100} showSizeChanger={false} />
+              </Col>
+            </>
           )}
         </Content>
       </OurBlogContext.Provider>

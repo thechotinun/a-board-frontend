@@ -55,23 +55,31 @@ const itemsMenu = [
   },
 ];
 
-const items = [
-  {
-    key: "/",
-    icon: <LogoutOutlined style={{ fontSize: "15px" }} />,
-    label: <Text onClick={() => signOut()}>Sign Out</Text>,
-  },
-];
-
 export default function MainLayout({ children }) {
   const { data: session, status } = useSession();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  const items = [
+    {
+      key: "/",
+      icon: session?.error ? (
+        <LoginOutlined style={{ fontSize: "15px" }} />
+      ) : (
+        <LogoutOutlined style={{ fontSize: "15px" }} />
+      ),
+      label: session?.error ? (
+        <Text onClick={() => router.push("/signin")}>Go to Sign In</Text>
+      ) : (
+        <Text onClick={() => signOut()}>Sign Out</Text>
+      ),
+    },
+  ];
+
   const pathname = usePathname();
-  const firstSegment = pathname.split('/')[1];
-  
+  const firstSegment = pathname.split("/")[1];
+
   const screens = useBreakpoint();
   const [screenMD, setScreenMD] = useState("20%");
   const {

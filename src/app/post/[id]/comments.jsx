@@ -18,7 +18,14 @@ dayjs.extend(relativeTime);
 
 export default function Comments({ comment }) {
   const { data } = comment;
-  const [expanded, setExpanded] = useState(false);
+  const [expandedState, setExpandedState] = useState({});
+
+  const handleExpand = (commentId, info) => {
+    setExpandedState(prev => ({
+      ...prev,
+      [commentId]: info.expanded
+    }));
+  };
 
   return (
     <Row
@@ -27,9 +34,6 @@ export default function Comments({ comment }) {
         background: "#FFFFFF",
         padding: "15px 10px",
         borderRadius: "12px",
-        // maxHeight: "50%",
-        // maxHeight: "calc(65vh - 150px)",
-        // overflowY: "auto",
       }}
     >
       {data?.length
@@ -71,8 +75,8 @@ export default function Comments({ comment }) {
                     ellipsis={{
                       rows: 2,
                       expandable: "collapsible",
-                      expanded,
-                      onExpand: (_, info) => setExpanded(info.expanded),
+                      expanded: expandedState[e.id] || false,
+                      onExpand: (_, info) => handleExpand(e.id, info)
                     }}
                   >
                     {e?.text}

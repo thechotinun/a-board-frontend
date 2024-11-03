@@ -124,7 +124,7 @@ export default function Detail({ post, comment }) {
                 <Col span={24}>
                   <Title level={5}>{data?.title}</Title>
                 </Col>
-                <Col span={24} style={{ maxHeight: 130, overflowY: "auto" }}>
+                <Col span={24} style={{ maxHeight: 200, overflowY: "auto" }}>
                   <Paragraph>{data?.description}</Paragraph>
                 </Col>
                 <Col span={24} style={{ marginBottom: "15px" }}>
