@@ -81,7 +81,7 @@ export default function Detail({ post, comment }) {
             <Col style={{ height: "100%", width: "100%" }}>
               <Col>
                 <Col style={{ marginTop: "30px", marginBottom: "20px" }}>
-                  <LeftCircleOutlined style={{ fontSize: "31px" }} />
+                  <LeftCircleOutlined style={{ fontSize: "31px", color: "#7eb78f" }} onClick={() => router.push(`/`)} />
                 </Col>
                 <Col
                   span={24}
@@ -111,7 +111,7 @@ export default function Detail({ post, comment }) {
                       />
                     )}
                   </div>
-                  <Text style={{ color: "#000000", marginRight: "5px" }}>
+                  <Text style={{ color: "#000000", marginRight: "5px", fontWeight: "bold" }}>
                     {data?.user?.userName}
                   </Text>
                   <Text style={{ color: "#939494" }}>
@@ -131,7 +131,7 @@ export default function Detail({ post, comment }) {
                   <CommentOutlined
                     style={{ fontSize: "18px", marginRight: "4px" }}
                   />
-                  <Text>{data?.commentCount} Comments</Text>
+                  <Text style={{ color: "#939494" }} >{data?.commentCount} Comments</Text>
                 </Col>
                 {!isOpenTextArea ? (
                   <Col span={24}>
@@ -222,7 +222,7 @@ export default function Detail({ post, comment }) {
                   </>
                 )}
               </Col>
-              <Col style={{ maxHeight: "350px", overflowY: "auto" }}>
+              <Col>
                 <Comments comment={comment} />
               </Col>
               

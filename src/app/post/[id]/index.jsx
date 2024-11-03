@@ -20,6 +20,7 @@ export default function Post({post, comment}) {
           margin: 0,
           height: "100%",
           background: colorBgContainer,
+          overflowY: "auto"
         }}
       >
         <Detail post={post} comment={comment}/>

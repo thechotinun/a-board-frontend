@@ -79,7 +79,7 @@ export default function Card({ posts, isOurBlog }) {
                           />
                         )}
                       </div>
-                      <Text style={{ color: "#939494" }}>
+                      <Text style={{ color: "#939494", fontWeight: "bold" }}>
                         {e.user.userName}
                       </Text>
                     </Col>
@@ -126,9 +126,6 @@ export default function Card({ posts, isOurBlog }) {
                     <Paragraph
                       ellipsis={{
                         rows: 2,
-                        expandable: "collapsible",
-                        expanded,
-                        onExpand: (_, info) => setExpanded(info.expanded),
                       }}
                     >
                       {e.description}
@@ -144,7 +141,7 @@ export default function Card({ posts, isOurBlog }) {
                     <CommentOutlined
                       style={{ fontSize: "18px", marginRight: "4px" }}
                     />
-                    <Text>{e.commentCount} Comments</Text>
+                    <Text style={{ color: "#939494" }}>{e.commentCount} Comments</Text>
                     <Text
                       style={{ color: "blue", cursor: "pointer" }}
                       onClick={() => router.push(`/post/${e.id}`)}
