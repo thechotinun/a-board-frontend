@@ -11,7 +11,7 @@ import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 
-export default function Search() {
+export default function Search({ setSearchTitle, setSearchCommunity }) {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -26,18 +26,11 @@ export default function Search() {
       : homeContext.communitys;
 
   const onChange = (value) => {
-    console.log(`selected ${value}`);
-  };
-
-  const onChangeSearchInp = (e) => {
-    const delay = setTimeout(() => {
-      if(e.target.value.length !== 0){
-        router.push(`?title=${e.target.value}`);
-      }else{
-        router.push(`${pathname}`);
-      }
-    }, 1000);
-    return () => clearTimeout(delay);
+    if(value === "all"){
+      setSearchCommunity('');
+    }else{
+      setSearchCommunity(value);
+    }
   };
 
   const warning = () => {
@@ -66,7 +59,7 @@ export default function Search() {
           }
           placeholder="Search"
           allowClear
-          onChange={onChangeSearchInp}
+          onChange={(e) => setSearchTitle(e.target.value)}
         />
       </Col>
 
@@ -79,14 +72,15 @@ export default function Search() {
             width: "100%",
             maxWidth: "128px",
           }}
-          options={
-            communitys?.data?.length
+          options={[
+            { value: 'all', label: "All Community" },
+            ...(communitys?.data?.length
               ? communitys.data.map((e) => ({
                   value: e.id,
                   label: e.name,
                 }))
-              : []
-          }
+              : []),
+          ]}
         />
       </Col>
       <Col xs={7} sm={4} md={5} lg={4} style={{ textAlign: "right" }}>

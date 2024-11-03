@@ -19,7 +19,6 @@ const { Paragraph, Title, Text } = Typography;
 export default function Card({ posts, isOurBlog }) {
   const router = useRouter();
   const [postId, setPostId] = useState();
-  const [expanded, setExpanded] = useState(false);
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
 
@@ -37,8 +36,8 @@ export default function Card({ posts, isOurBlog }) {
         }}
       >
         <Col span={24}>
-          {posts?.data?.length ? (
-            posts?.data.map((e) => {
+          {posts?.length ? (
+            posts.map((e) => {
               return (
                 <Col key={e.id} span={24}>
                   <Col
