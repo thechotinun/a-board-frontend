@@ -25,6 +25,7 @@ export default function Home({ communitys }) {
 
   const fetchingPosts = async (newPage) => {
     try {
+      setIsLoading(true);
       const {
         data: { data: data, meta: meta },
       } = await axios.get("/api/post", {
@@ -40,6 +41,8 @@ export default function Home({ communitys }) {
       setTableParams(meta);
     } catch (error) {
       console.error("Error fetching Posts:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -68,6 +71,10 @@ export default function Home({ communitys }) {
 
     return () => clearTimeout(delay);
   }, [searchTitle, searchCommunity]);
+
+  const handleManualRefresh = () => {
+    fetchingPosts(tableParams?.currentPage);
+  }
 
   const handlePageChange = async (newPage) => {
     try {
@@ -98,7 +105,7 @@ export default function Home({ communitys }) {
             borderRadius: borderRadiusLG,
           }}
         >
-          <Card posts={posts} />
+          <Card posts={posts} handleManualRefresh={handleManualRefresh} isLoading={isLoading}/>
           <Col
             style={{
               width: "100%",
