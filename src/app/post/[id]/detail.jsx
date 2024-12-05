@@ -1,7 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Typography, Row, Col, Tag, Grid, Modal } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Typography,
+  Row,
+  Col,
+  Tag,
+  Grid,
+  Modal,
+} from "antd";
 import Image from "next/image";
 import { LeftCircleOutlined, CommentOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
@@ -12,6 +22,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useSocket } from "@/app/hooks/useSocket";
 
 const { Paragraph, Title, Text } = Typography;
 const { TextArea } = Input;
@@ -27,6 +38,7 @@ export default function Detail({ post, comment }) {
   const screens = useBreakpoint();
   const [screenMD, setScreenMD] = useState("20%");
   const { data: session, status } = useSession();
+  const socket = useSocket(data.id, session?.accessToken);
 
   const warning = () => {
     return Modal.warning({
@@ -35,7 +47,6 @@ export default function Detail({ post, comment }) {
       centered: true,
     });
   };
-  
 
   const handleSubmit = async (values) => {
     if (!session || session?.error === "AccessTokenError") return warning();
@@ -46,6 +57,14 @@ export default function Detail({ post, comment }) {
         `/api/post/${data.id}/comment`,
         dataForm
       );
+      const newComment = response.data.data;
+      socket.emit('createComment', {
+        postId: data.id,
+        id: newComment.id,
+        text: newComment.text,
+        createdDate: newComment.createdDate
+      });
+
       formComment.resetFields();
       router.refresh();
       if (screenMD === "0") {
@@ -55,6 +74,7 @@ export default function Detail({ post, comment }) {
       }
     } catch (error) {
       console.error("Error creating post:", error);
+      return warning();
     }
   };
 
@@ -68,7 +88,9 @@ export default function Detail({ post, comment }) {
 
   return (
     <>
-      <Row style={{ height: "100%", width: "100%", backgroundColor: "#FFFFFF" }}>
+      <Row
+        style={{ height: "100%", width: "100%", backgroundColor: "#FFFFFF" }}
+      >
         <Col
           //   xs={{ push: 1, span: 22, pull: 1 }}
           //   md={{ push: 3, span: 18, pull: 3 }}
@@ -81,7 +103,10 @@ export default function Detail({ post, comment }) {
             <Col style={{ height: "100%", width: "100%" }}>
               <Col>
                 <Col style={{ marginTop: "30px", marginBottom: "20px" }}>
-                  <LeftCircleOutlined style={{ fontSize: "31px", color: "#7eb78f" }} onClick={() => router.push(`/`)} />
+                  <LeftCircleOutlined
+                    style={{ fontSize: "31px", color: "#7eb78f" }}
+                    onClick={() => router.push(`/`)}
+                  />
                 </Col>
                 <Col
                   span={24}
@@ -111,7 +136,13 @@ export default function Detail({ post, comment }) {
                       />
                     )}
                   </div>
-                  <Text style={{ color: "#000000", marginRight: "5px", fontWeight: "bold" }}>
+                  <Text
+                    style={{
+                      color: "#000000",
+                      marginRight: "5px",
+                      fontWeight: "bold",
+                    }}
+                  >
                     {data?.user?.userName}
                   </Text>
                   <Text style={{ color: "#939494" }}>
@@ -131,7 +162,9 @@ export default function Detail({ post, comment }) {
                   <CommentOutlined
                     style={{ fontSize: "18px", marginRight: "4px" }}
                   />
-                  <Text style={{ color: "#939494" }} >{data?.commentCount} Comments</Text>
+                  <Text style={{ color: "#939494" }}>
+                    {data?.commentCount} Comments
+                  </Text>
                 </Col>
                 {!isOpenTextArea ? (
                   <Col span={24}>
@@ -223,9 +256,8 @@ export default function Detail({ post, comment }) {
                 )}
               </Col>
               <Col>
-                <Comments comment={comment} />
+                <Comments comment={comment} socket={socket}/>
               </Col>
-              
             </Col>
           </Row>
         </Col>
