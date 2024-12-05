@@ -7,7 +7,7 @@ import MainLayout from "../components/layout";
 import Search from "../components/search/search";
 import Card from "../components/card/card";
 import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 
 const { Title, Text, Paragraph } = Typography;
@@ -17,7 +17,6 @@ export const OurBlogContext = createContext({});
 
 export default function OurBlog({ communitys }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [posts, setPosts] = useState([]);
   const [searchTitle, setSearchTitle] = useState();
   const [searchCommunity, setSearchCommunity] = useState();

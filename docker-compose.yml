@@ -1,0 +1,38 @@
+services:
+  frontend:
+    restart: always
+    image: frontend:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - APP_ID
+        - NEXTAUTH_URL
+        - NEXTAUTH_SECRET
+    environment:
+      - APP_ID
+      - NEXTAUTH_URL
+      - NEXTAUTH_SECRET
+    expose:
+      - "3000"
+    container_name: frontend
+    networks:
+      - network-morroc
+
+  nginx-morroc-frontend:
+    restart: always
+    image: nginx:latest-frontend
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx-morroc-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - frontend
+    networks:
+      - network-morroc
+
+networks:
+  network-morroc:
+    external: true

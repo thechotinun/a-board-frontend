@@ -2,7 +2,7 @@ import axiosInstance from "../utils/axios.interceptor";
 import { redirect } from "next/navigation";
 import OurBlog from "./ourblog";
 
-export default async function Posts({ searchParams }) {
+export default async function Posts({}) {
   let communitys;
 
   try {

@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, createContext, useEffect } from "react";
-import { Layout, theme, Col, Pagination } from "antd";
+import React, { useState, createContext, useEffect, useRef } from "react";
+import { Layout, theme, Col, Pagination, Button } from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
 import MainLayout from "./components/layout";
 import Search from "./components/search/search";
 import Card from "./components/card/card";
-import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 
 const { Content } = Layout;
@@ -17,6 +17,8 @@ export default function Home({ communitys }) {
   const [searchTitle, setSearchTitle] = useState();
   const [searchCommunity, setSearchCommunity] = useState();
   const [tableParams, setTableParams] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const pollingInterval = useRef();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -29,7 +31,8 @@ export default function Home({ communitys }) {
         params: {
           page: newPage,
           title: searchTitle?.trim(),
-          communityId: searchCommunity?.length === 0 ? undefined : searchCommunity
+          communityId:
+            searchCommunity?.length === 0 ? undefined : searchCommunity,
         },
       });
 
@@ -40,9 +43,19 @@ export default function Home({ communitys }) {
     }
   };
 
+  // Initial fetch when component mounts
   useEffect(() => {
-    fetchingPosts();
+    fetchingPosts(1); // Fetch first time
   }, []);
+
+  // Polling setup
+  useEffect(() => {
+    pollingInterval.current = setInterval(() => {
+      fetchingPosts(tableParams?.currentPage);
+    }, 30000); // Poll every 30 seconds
+
+    return () => clearInterval(pollingInterval.current);
+  }, [searchTitle, searchCommunity, tableParams?.currentPage]);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -72,7 +85,10 @@ export default function Home({ communitys }) {
   return (
     <MainLayout>
       <HomeContext.Provider value={contextValue}>
-        <Search setSearchTitle={setSearchTitle} setSearchCommunity={setSearchCommunity}/>
+        <Search
+          setSearchTitle={setSearchTitle}
+          setSearchCommunity={setSearchCommunity}
+        />
         <Content
           style={{
             padding: "15px 24px",

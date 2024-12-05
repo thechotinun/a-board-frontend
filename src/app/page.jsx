@@ -3,7 +3,7 @@ import Home from "./home";
 import axiosInstance from "./utils/axios.interceptor";
 
 
-export default async function Posts({ searchParams }) {
+export default async function Posts({}) {
   let communitys = [];
 
   try {
