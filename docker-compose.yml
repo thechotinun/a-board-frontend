@@ -1,35 +1,37 @@
 services:
-  frontend:
+  a-board-frontend:
     restart: always
     image: frontend:latest
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - APP_ID
-        - NEXTAUTH_URL
-        - NEXTAUTH_SECRET
+        - NEXTAUTH_URL=${NEXTAUTH_URL}
+        - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+        - NEXT_PUBLIC_SOCKET_URL=${NEXT_PUBLIC_SOCKET_URL}
     environment:
-      - APP_ID
       - NEXTAUTH_URL
       - NEXTAUTH_SECRET
+      - NEXT_PUBLIC_API_URL
+      - NEXT_PUBLIC_SOCKET_URL
     expose:
-      - "3000"
-    container_name: frontend
+      - "3002"
+    container_name: a-board-frontend
     networks:
       - network-morroc
 
-  nginx-morroc-frontend:
+  a-board-nginx-frontend:
     restart: always
     image: nginx:latest-frontend
     build:
       context: ./nginx
       dockerfile: Dockerfile
-    container_name: nginx-morroc-frontend
+    container_name: a-board-nginx-frontend
     ports:
-      - "3000:80"
+      - "3002:80"
     depends_on:
-      - frontend
+      - a-board-frontend
     networks:
       - network-morroc
 
