@@ -21,13 +21,12 @@ services:
     networks:
       - network-morroc
 
-  a-board-nginx-frontend:
+  a-board-frontend-nginx:
     restart: always
-    image: nginx:latest-frontend
     build:
       context: ./nginx
       dockerfile: Dockerfile
-    container_name: a-board-nginx-frontend
+    container_name: a-board-frontend-nginx
     ports:
       - "3002:80"
     depends_on:
