@@ -1,11 +1,11 @@
 pipeline {
     agent any
 
-
     environment {
-        APP_ID = credentials('app_id')
-        NEXTAUTH_URL = credentials('nextauth_url')
-        NEXTAUTH_SECRET = credentials('nextauth_secret')
+        NEXTAUTH_URL = credentials('NEXTAUTH_URL')
+        NEXTAUTH_SECRET = credentials('NEXTAUTH_SECRET')
+        NEXT_PUBLIC_API_URL = credentials('NEXT_PUBLIC_API_URL')
+        NEXT_PUBLIC_SOCKET_URL = credentials('NEXT_PUBLIC_SOCKET_URL')
     }
 
     stages {
@@ -17,9 +17,10 @@ pipeline {
                 echo "Building and running containers"
                 sh '''
                     docker-compose build \
-                        --build-arg APP_ID=${APP_ID} \
                         --build-arg NEXTAUTH_URL=${NEXTAUTH_URL} \
-                        --build-arg NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+                        --build-arg NEXTAUTH_SECRET=${NEXTAUTH_SECRET} \
+                        --build-arg NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL} \
+                        --build-arg NEXT_PUBLIC_SOCKET_URL=${NEXT_PUBLIC_SOCKET_URL}
                     docker-compose up -d
                 '''
             }
