@@ -1,7 +1,6 @@
 services:
   a-board-frontend:
     restart: always
-    image: frontend:latest
     build:
       context: .
       dockerfile: Dockerfile
