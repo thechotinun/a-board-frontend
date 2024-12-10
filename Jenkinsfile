@@ -5,7 +5,7 @@ pipeline {
         NEXTAUTH_URL = credentials('NEXTAUTH_URL')
         NEXTAUTH_SECRET = credentials('NEXTAUTH_SECRET')
         NEXT_PUBLIC_API_URL = credentials('NEXT_PUBLIC_API_URL')
-        NEXT_PUBLIC_SOCKET_URL = credentials('NEXT_PUBLIC_SOCKET_URL')
+        NEXT_PUBLIC_SOCKET_URL = credentials('NEXT_PUBLIC_SOCKET_URL2')
     }
 
     stages {
