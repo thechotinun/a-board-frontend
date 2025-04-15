@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { Row, Col, Typography, Tag, Pagination } from "antd";
+import { Row, Col, Typography, Tag, Pagination, Button } from "antd";
 import {
   SearchOutlined,
   CommentOutlined,
   EditOutlined,
   DeleteOutlined,
+  ReloadOutlined,
 } from "@ant-design/icons";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -16,7 +17,7 @@ import styles from "./card-post.module.css";
 
 const { Paragraph, Title, Text } = Typography;
 
-export default function Card({ posts, isOurBlog }) {
+export default function Card({ posts, isOurBlog, handleManualRefresh, isLoading }) {
   const router = useRouter();
   const [postId, setPostId] = useState();
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
@@ -36,6 +37,23 @@ export default function Card({ posts, isOurBlog }) {
         }}
       >
         <Col span={24}>
+        {!isOurBlog && (
+        <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: 16,
+            }}
+          >
+            <Button
+              icon={<ReloadOutlined spin={isLoading} />}
+              onClick={handleManualRefresh}
+              loading={isLoading}
+            >
+              Refresh
+            </Button>
+          </div>
+        )}
           {posts?.length ? (
             posts.map((e) => {
               return (

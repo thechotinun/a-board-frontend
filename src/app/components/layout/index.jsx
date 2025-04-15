@@ -243,7 +243,7 @@ export default function MainLayout({ children }) {
           </Col>
           <Col style={{ height: "40px", cursor: "pointer" }}>
             <FormOutlined
-              style={{ color: "#BBC2C0", fontSize: "18px", marginRight: "5px" }}
+              style={{ color: "#FFFFFF", fontSize: "18px", marginRight: "5px" }}
             />{" "}
             <Link
               href="/ourblog"

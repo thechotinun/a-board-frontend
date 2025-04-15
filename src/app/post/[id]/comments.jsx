@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Input, Select, Button, Typography, Tag } from "antd";
 import {
   SearchOutlined,
@@ -16,16 +16,29 @@ import relativeTime from "dayjs/plugin/relativeTime";
 const { Paragraph, Title, Text } = Typography;
 dayjs.extend(relativeTime);
 
-export default function Comments({ comment }) {
+export default function Comments({ comment, socket }) {
   const { data } = comment;
+  const [comments, setComments] = useState();
   const [expandedState, setExpandedState] = useState({});
 
+  useEffect(() => {
+    setComments(data);
+  }, [data]);
+  
   const handleExpand = (commentId, info) => {
     setExpandedState(prev => ({
       ...prev,
       [commentId]: info.expanded
     }));
   };
+  
+  useEffect(()=>{
+    if (!socket) return;
+
+    socket.on('newComment', (newComment) => {
+      setComments(prev => [newComment, ...prev]);
+    });
+  }, [socket]);
 
   return (
     <Row
@@ -36,8 +49,8 @@ export default function Comments({ comment }) {
         borderRadius: "12px",
       }}
     >
-      {data?.length
-        ? data.map((e) => {
+      {comments?.length
+        ? comments.map((e) => {
             return (
               <React.Fragment key={e.id}>
                 <Col
